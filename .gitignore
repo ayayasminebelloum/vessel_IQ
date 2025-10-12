@@ -1,5 +1,10 @@
 data/
 venv/
+vennv/
+plots/
+merged_parquet/
+merged_csv/
+merged/
 __pycache__/
 *.pyc
 *.pyo

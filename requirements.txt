@@ -9,3 +9,10 @@ tensorflow
 jupyterlab
 notebook
 jupyter
+pyarrow
+plotly
+datashader
+colorcet
+hvplot
+dask[complete]
+umap
