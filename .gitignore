@@ -1,6 +1,7 @@
 data/raw
 data/cleaned_csv/cleaned
 merged_sensor_data.csv
+data/merged_for_correlation.csv
 venv/
 vennv/
 merged_parquet/
@@ -21,4 +22,3 @@ __pycache__/
 *.coverage
 *.pytest_cache/
 *.mypy_cache/
-*.ipynb_checkpoints/
