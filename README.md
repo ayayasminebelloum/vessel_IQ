@@ -25,10 +25,12 @@ Modern ships generate large volumes of sensor data related to propulsion, fuel, 
 vessel-sensor-quality/
 │
 ├── data/
-│   ├── raw/                 # Original vessel sensor data (time-series)
-│   ├── processed/           # Cleaned and synchronized datasets
-│   └── correlations/        # Correlation matrices, PCA components, summary statistics
-│
+│   ├── raw/                        # Original raw vessel sensor data 
+│   ├── merged_csv/                 # Curated vessel sensor data into csv
+│   ├── cleaned_csv/                # Cleaned and synchronized sen
+    ├── merged_for_correlation.csv  # Merged cleaned sensor data
+│   └── correlations                # Correlation matrices, PCA components, summary statistics
+
 ├── notebooks/
 │   ├── 1_data_exploration.ipynb
 │   ├── 2_correlation_analysis.ipynb
@@ -46,11 +48,12 @@ vessel-sensor-quality/
 │
 ├── results/
 │   ├── figures/                # Correlation heatmaps, time-series anomaly plots
+    ├── analysis                # 2nd analysis phase; correlation        
 │   └── metrics/                # Data quality scores, reconstruction errors
 │
 ├── requirements.txt
-├── README.md
-└── report.pdf                  # Full research document (this paper)
+├── LICENSE 
+└── README.md                 
 ```
 
 ---

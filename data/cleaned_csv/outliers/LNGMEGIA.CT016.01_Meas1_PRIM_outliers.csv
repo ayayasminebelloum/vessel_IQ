@@ -1,0 +1,2 @@
+Timestamp,Value,ValueStatus,ExportType,TimestampPrecisionType,IncludeBadValues,TotalEvents,TotalGoodValues,TotalBadValues,LowestFrequency,HighestFrequency,AverageFrequency,DigitalSet,ExceptionDeviation,ExceptionMaximum,ExceptionMinimum,ExceptionPercentage,Span,Zero,EngineeringUnits,Compressing,Step,CompressionDeviation,CompressionMaximum,CompressionMinimum,CompressionPercentage,IsOutlier
+2025-03-12 11:03:00+00:00,25.18,1.0,2.0,1.0,1.0,204112.0,204009.0,103.0,0.0,0.0558333333333333,0.0036683344835518,,0.0,0.0,0.0,0.0,100.0,0.0,,1.0,0.0,0.0,0.0,0.0,0.0,True

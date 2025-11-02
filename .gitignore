@@ -1,7 +1,8 @@
-data/
+data/raw
+data/cleaned_csv/cleaned
+merged_sensor_data.csv
 venv/
 vennv/
-plots/
 merged_parquet/
 merged_csv/
 merged/
