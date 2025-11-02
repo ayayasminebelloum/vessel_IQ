@@ -60,110 +60,97 @@ vessel-sensor-quality/
 
 ## Methodology
 
-The methodology follows five main stages, consistent with the report:
+The methodology follows five main stages, consistent with the project’s structure and implemented across modular components under `src/` and analysis notebooks in `notebooks/`.
+
+---
 
 ### 1. Data Familiarization and Preprocessing
 
-* Load raw time-series data from multiple sensors (engine, navigation, cargo).
-* Synchronize timestamps and align signals to uniform sampling intervals.
-* Handle missing values using interpolation or statistical imputation.
-* Filter out non-operational periods (e.g., vessel idle state).
+* Load and inspect raw vessel sensor data from multiple subsystems (engine, propulsion, navigation, cargo).  
+* Synchronize timestamps across signals to ensure temporal alignment.  
+* Interpolate missing data and smooth noisy segments using statistical imputation.  
+* Normalize and resample all signals to consistent frequency (e.g., 1-minute intervals).  
+* Store cleaned datasets under `data/processed/` for downstream correlation and anomaly analysis.
 
-### 2. Detecting Relationships Between Data Points
+---
 
-* Compute **Pearson** and **Spearman** correlations to reveal linear and monotonic dependencies.
-* Apply **cross-correlation functions** to identify time-lagged relationships.
-* Use **Principal Component Analysis (PCA)** to detect dominant patterns in multivariate data.
+### 2. Correlation and Relationship Analysis
+
+* Compute **Pearson**, **Spearman**, and **Kendall** correlations to capture linear and monotonic dependencies.  
+* Generate **heatmaps** and **hierarchical clustering dendrograms** to group highly related sensors.  
+* Apply **cross-correlation** and **lagged correlation** to detect lead-lag temporal influences between signals.  
+* Perform **rolling correlation** to assess stability of relationships over time.  
+* Conduct **Principal Component Analysis (PCA)** and **Mutual Information** analysis to uncover nonlinear patterns.  
+* Output correlation matrices, visualizations, and summary statistics to `data/correlations/` and `results/figures/`.
+
+---
 
 ### 3. Statistical Anomaly Detection
 
-* **Single-sensor analysis:** Apply z-score, IQR, and rolling standard deviation to flag outliers or frozen sensors.
-* **Multi-sensor analysis:** Monitor deviations in expected correlations; identify when relationships among sensors diverge from normal patterns.
+* Implement single-sensor outlier detection via **Z-score**, **IQR**, and **rolling standard deviation** methods.  
+* Extend to multi-sensor anomaly detection using **Correlation Anomaly Index (CAI)** and drift tracking.  
+* Use **Granger causality tests** to infer directional relationships and identify unexpected temporal changes.  
+* Store outlier results in `data/outliers/` and visualization outputs in `results/figures/`.
 
-### 4. Machine Learning Extensions
+---
 
-* Implement unsupervised algorithms capable of learning normal behavior without labels:
+### 4. Machine Learning-Based Extensions
 
-  * **Isolation Forest** for anomaly scoring.
-  * **DBSCAN** for density-based clustering and noise detection.
-  * **Autoencoders** to reconstruct normal sensor relationships; reconstruction error serves as anomaly indicator.
-* These methods generalize across vessels and support scalable, automated validation.
+* Integrate unsupervised ML algorithms for robust, label-free anomaly detection:
+  * **Isolation Forest** – anomaly scoring based on feature isolation.  
+  * **DBSCAN** – clustering and noise-based detection.  
+  * **Autoencoders** – reconstruction of normal sensor patterns, using reconstruction error as anomaly signal.  
+* Support scalable cross-vessel validation by standardizing feature sets and correlation-based metrics.  
+* Modularized implementations available under `src/anomaly_ml.py`.
+
+---
 
 ### 5. Visualization and Reporting
 
-* Generate correlation heatmaps and anomaly overlays on time-series plots.
-* Summarize detected anomalies by sensor and voyage period.
-* Produce quantitative quality metrics (percentage of valid points, deviation from expected correlations).
+* Use `src/visualization.py` to render:
+  * Correlation and PCA heatmaps.  
+  * Rolling correlation drift plots.  
+  * Sensor anomaly overlays and CHI (Correlation Health Index) charts.  
+* Summarize quality scores and detected anomalies in `results/metrics/`.  
+* Provide interpretable graphics for engineers and analysts to assess vessel data health.
 
 ---
 
 ## Optional Extension: Transformer-Based Approach
 
-Although not implemented in the initial research phase, transformer models can be incorporated to enhance temporal and inter-sensor modeling.
+While not yet implemented in the current phase, transformer models are planned for advanced multivariate and temporal correlation modeling.
 
 ### Motivation
 
-Traditional methods (statistical, clustering, or autoencoder-based) assume relatively simple correlations. Transformers can model **complex, nonlinear, and long-range dependencies** between sensors over time.
+Conventional statistical and clustering methods assume fixed, often linear dependencies. Transformer-based models can learn **nonlinear, long-range temporal relationships** among sensors dynamically.
 
-### Possible Implementations
+### Future Implementations
 
-* **Temporal Transformer Autoencoder:**
-  Train a sequence-to-sequence model on normal time-series segments; use reconstruction error for anomaly detection.
-* **Anomaly Transformer (Zhou et al., 2021):**
-  Learns association discrepancy between normal and abnormal patterns in multivariate sensor data.
-* **Multimodal Sensor Attention:**
-  Use attention weights to visualize which sensors contribute most to detected anomalies, providing interpretability.
-
-### Benefits
-
-* Captures long-term and nonlinear dependencies.
-* Learns adaptive correlations automatically.
-* Can handle variable-length time windows and missing values.
+* **Temporal Transformer Autoencoder:** sequence-to-sequence model trained on normal patterns; reconstruction error used for anomaly scoring.  
+* **Anomaly Transformer (Zhou et al., 2021):** models association discrepancies to detect abnormal time-series patterns.  
+* **Attention-Based Multisensor Modeling:** highlight influential sensors contributing to abnormal events, improving interpretability.
 
 ---
 
 ## Expected Outcomes
 
-* Correlation maps highlighting stable inter-sensor relationships.
-* Anomaly detection framework combining statistical and ML-based validation.
-* Quantitative data quality metrics for each vessel dataset.
-* Scalable logic foundation for future rule-based or AI-driven monitoring systems.
-* Visualization layer for fleet-wide sensor health tracking.
+* Stable correlation maps and time-varying relationship analysis.  
+* Hybrid anomaly detection integrating statistical and ML-based components.  
+* Quantitative data quality metrics per sensor and per voyage.  
+* Scalable codebase for AI-driven sensor validation and health monitoring.  
+* Visualization layer enabling intuitive fleet-wide monitoring.
 
 ---
 
 ## Dependencies
 
-* Python 3.9+
-* pandas
-* numpy
-* scikit-learn
-* matplotlib
-* seaborn
-* tensorflow or pytorch (for autoencoder or transformer models)
+* Python ≥ 3.9  
+* pandas, numpy  
+* matplotlib, seaborn  
+* scikit-learn  
+* scipy, statsmodels  
+* tensorflow or pytorch (for autoencoder / transformer models)
 
-Install dependencies using:
-
+Install via:
 ```bash
 pip install -r requirements.txt
-```
-
----
-## Results and Evaluation
-
-* Detected anomalies across propulsion, navigation, and environmental sensors.
-* Identified strong correlations such as RPM ↔ Shaft Power ↔ Fuel Flow.
-* Developed automated indicators for frozen sensors and inconsistent relationships.
-* Demonstrated improved interpretability through correlation-driven reasoning.
-
----
-
-## Future Work
-
-1. Integrate contextual metadata (voyage phase, weather, cargo state) for contextual anomaly interpretation.
-2. Explore transformer-based architectures for long-term dependency modeling.
-3. Develop cross-vessel learning mechanisms to generalize data quality metrics.
-4. Combine correlation-driven detection with expert-defined operational logic.
-5. Implement real-time visualization dashboards for fleet monitoring.
-
-
