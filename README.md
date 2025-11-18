@@ -46,8 +46,8 @@ KONGSBERG/
 ├── notebooks/
 │   ├── correlation_analysis.ipynb
 │   ├── data_exploration.ipynb
-│   ├── mL_Integration.ipynb
-│   ├── outlier_Verification.ipynb
+│   ├── ml_integration.ipynb
+│   ├── outlier_verification.ipynb
 │   ├── statistical_diagnostics.ipynb
 │   └── testing_models.ipynb
 │
