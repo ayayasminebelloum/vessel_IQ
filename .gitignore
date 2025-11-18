@@ -2,6 +2,9 @@ data/raw
 data/cleaned_csv/cleaned
 merged_sensor_data.csv
 data/merged_for_correlation.csv
+merged_with_flags.csv
+testing/
+autoencoder_reconstruction_error.csv
 venv/
 vennv/
 merged_parquet/

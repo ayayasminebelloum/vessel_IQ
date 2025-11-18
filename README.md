@@ -2,155 +2,225 @@
 
 ## Overview
 
-This repository accompanies the research project **“Correlation-Driven Methods for Improving Vessel Sensor Data Quality.”**
-The project investigates statistical and machine learning approaches to improve the integrity of vessel sensor datasets by identifying relationships among data points and detecting anomalies.
+This repository contains the full workflow for **Correlation-Driven Methods for Improving Vessel Sensor Data Quality**, a research and engineering project focused on improving the integrity, reliability, and interpretability of vessel sensor data. Modern maritime systems generate large volumes of telemetry from propulsion, navigation, environmental, and mechanical subsystems — but real-world data is often noisy, incomplete, unsynchronized, or corrupted.
 
-Modern ships generate large volumes of sensor data related to propulsion, fuel, cargo, and environmental conditions. However, such data is often affected by sensor drift, frozen readings, outliers, or missing values. This research proposes a **correlation-driven approach**—leveraging inter-sensor dependencies to assess and enhance data quality—before downstream analytics such as performance monitoring or predictive maintenance are applied.
+This project implements a **multi-stage data quality pipeline** built around correlation-driven insights, statistical diagnostics, and machine learning models. It aligns with Kongsberg's goals of improving fleet analytics, anomaly detection, and vessel health monitoring.
 
 ---
 
-## Research Objectives
+## Objectives
 
-1. Identify correlations and dependencies among vessel sensors.
-2. Detect and classify data anomalies (frozen sensors, outliers, drift).
-3. Evaluate the effectiveness of statistical, rule-based, and machine learning methods.
-4. Develop an interpretable, scalable framework for vessel data validation.
-5. Prepare datasets for higher-level models in fleet analytics and optimization.
+The project is structured around six major goals:
+
+1. **Data ingestion & synchronization** across multiple sensor subsystems.
+2. **Exploratory analysis** to understand sensor behaviors and detect structural issues.
+3. **Correlation analysis** to map sensor dependencies.
+4. **Statistical diagnostics** to detect outliers, frozen sensors, drift, and noise.
+5. **Machine learning integration** for anomaly detection and validation.
+6. **Model testing & evaluation** using engineered datasets and validation loops.
+
+Each objective corresponds to a notebook under `/notebooks` and modular code under `/src`.
 
 ---
 
 ## Repository Structure
 
 ```
-vessel-sensor-quality/
+KONGSBERG/
 │
 ├── data/
-│   ├── raw/                        # Original raw vessel sensor data 
-│   ├── merged_csv/                 # Curated vessel sensor data into csv
-│   ├── cleaned_csv/                # Cleaned and synchronized sen
-    ├── merged_for_correlation.csv  # Merged cleaned sensor data
-│   └── correlations                # Correlation matrices, PCA components, summary statistics
-
+│   ├── cleaned_csv/            # Fully cleaned per-sensor datasets
+│   ├── derived/                # Engineered features and derived metrics
+│   ├── diagnostics/            # Statistical test outputs
+│   ├── heartbeat/              # Heartbeat-level system status data
+│   ├── mapping/                # Sensor mapping tables
+│   ├── ml_models/              # Saved ML models (IForest, AE, etc.)
+│   ├── network/                # Network topology or subsystem grouping
+│   ├── raw/                    # Raw sensor CSVs
+│   ├── testing/                # Validation datasets
+│   ├── merged_for_correlation.csv
+│   └── merged_sensor_data.csv
+│
+├── images/                    # Figures exported from notebooks
+│
 ├── notebooks/
-│   ├── 1_data_exploration.ipynb
-│   ├── 2_correlation_analysis.ipynb
-│   ├── 3_anomaly_detection_statistical.ipynb
-│   ├── 4_anomaly_detection_ml.ipynb
-│   └── 5_visualization.ipynb
+│   ├── correlation_analysis.ipynb
+│   ├── data_exploration.ipynb
+│   ├── mL_Integration.ipynb
+│   ├── outlier_Verification.ipynb
+│   ├── statistical_diagnostics.ipynb
+│   └── testing_models.ipynb
+│
+├── results/                   # Output metrics, diagnostics, reports
 │
 ├── src/
-│   ├── preprocessing.py        # Data synchronization, missing value handling
-│   ├── correlation_utils.py    # Pearson, Spearman, cross-correlation, PCA
-│   ├── anomaly_stats.py        # z-score, IQR, moving average, residuals
-│   ├── anomaly_ml.py           # Isolation Forest, DBSCAN, Autoencoder
-│   ├── transformer_extension.py# (Optional) Transformer-based anomaly detection
-│   └── visualization.py        # Heatmaps, time-series plots, dashboards
+│   ├── preprocessing.py
+│   ├── correlation_utils.py
+│   ├── statistical_tools.py
+│   ├── ml_integration.py
+│   ├── model_testing.py
+│   └── utils.py
 │
-├── results/
-│   ├── figures/                # Correlation heatmaps, time-series anomaly plots
-    ├── analysis                # 2nd analysis phase; correlation        
-│   └── metrics/                # Data quality scores, reconstruction errors
-│
+├── venv/
+├── LICENSE
 ├── requirements.txt
-├── LICENSE 
-└── README.md                 
+└── README.md (this file)
 ```
 
 ---
 
-## Methodology
+## Workflow Breakdown (Aligned With the 6 Notebooks)
 
-The methodology follows five main stages, consistent with the project’s structure and implemented across modular components under `src/` and analysis notebooks in `notebooks/`.
-
----
-
-### 1. Data Familiarization and Preprocessing
-
-* Load and inspect raw vessel sensor data from multiple subsystems (engine, propulsion, navigation, cargo).  
-* Synchronize timestamps across signals to ensure temporal alignment.  
-* Interpolate missing data and smooth noisy segments using statistical imputation.  
-* Normalize and resample all signals to consistent frequency (e.g., 1-minute intervals).  
-* Store cleaned datasets under `data/processed/` for downstream correlation and anomaly analysis.
+Below is the **true workflow sequence** corresponding to your actual notebooks.
 
 ---
 
-### 2. Correlation and Relationship Analysis
+## 1. Data Exploration (`data_exploration.ipynb`)
 
-* Compute **Pearson**, **Spearman**, and **Kendall** correlations to capture linear and monotonic dependencies.  
-* Generate **heatmaps** and **hierarchical clustering dendrograms** to group highly related sensors.  
-* Apply **cross-correlation** and **lagged correlation** to detect lead-lag temporal influences between signals.  
-* Perform **rolling correlation** to assess stability of relationships over time.  
-* Conduct **Principal Component Analysis (PCA)** and **Mutual Information** analysis to uncover nonlinear patterns.  
-* Output correlation matrices, visualizations, and summary statistics to `data/correlations/` and `results/figures/`.
+**Goal:** Understand the raw sensor structure, sampling rates, missing values, and anomalies.
 
----
+### Key tasks
 
-### 3. Statistical Anomaly Detection
+* Load raw CSVs from `/data/raw`
+* Standardize column names
+* Detect timestamp issues
+* Plot primary signals & density curves
+* Identify feature groups
+* Compute basic statistics (mean, std, count)
 
-* Implement single-sensor outlier detection via **Z-score**, **IQR**, and **rolling standard deviation** methods.  
-* Extend to multi-sensor anomaly detection using **Correlation Anomaly Index (CAI)** and drift tracking.  
-* Use **Granger causality tests** to infer directional relationships and identify unexpected temporal changes.  
-* Store outlier results in `data/outliers/` and visualization outputs in `results/figures/`.
+**Outputs:**
 
----
-
-### 4. Machine Learning-Based Extensions
-
-* Integrate unsupervised ML algorithms for robust, label-free anomaly detection:
-  * **Isolation Forest** – anomaly scoring based on feature isolation.  
-  * **DBSCAN** – clustering and noise-based detection.  
-  * **Autoencoders** – reconstruction of normal sensor patterns, using reconstruction error as anomaly signal.  
-* Support scalable cross-vessel validation by standardizing feature sets and correlation-based metrics.  
-* Modularized implementations available under `src/anomaly_ml.py`.
+* `/images/eda_density_fixed.png`
+* Summary of missing data
+* Initial signal quality flags
 
 ---
 
-### 5. Visualization and Reporting
+## 2. Correlation Analysis (`correlation_analysis.ipynb`)
 
-* Use `src/visualization.py` to render:
-  * Correlation and PCA heatmaps.  
-  * Rolling correlation drift plots.  
-  * Sensor anomaly overlays and CHI (Correlation Health Index) charts.  
-* Summarize quality scores and detected anomalies in `results/metrics/`.  
-* Provide interpretable graphics for engineers and analysts to assess vessel data health.
+**Goal:** Build a correlation-driven map of all sensor dependencies.
 
----
+### Methods used
 
-## Optional Extension: Transformer-Based Approach
+* Pearson, Spearman correlation matrices
+* Rolling window correlations
+* Lag correlation computation
+* PCA-based dimensionality reduction
+* Visualization of clustering between sensors
 
-While not yet implemented in the current phase, transformer models are planned for advanced multivariate and temporal correlation modeling.
+**Inputs:** `merged_for_correlation.csv`
 
-### Motivation
+**Outputs:**
 
-Conventional statistical and clustering methods assume fixed, often linear dependencies. Transformer-based models can learn **nonlinear, long-range temporal relationships** among sensors dynamically.
-
-### Future Implementations
-
-* **Temporal Transformer Autoencoder:** sequence-to-sequence model trained on normal patterns; reconstruction error used for anomaly scoring.  
-* **Anomaly Transformer (Zhou et al., 2021):** models association discrepancies to detect abnormal time-series patterns.  
-* **Attention-Based Multisensor Modeling:** highlight influential sensors contributing to abnormal events, improving interpretability.
+* Heatmaps (saved to `/images`)
+* PCA components
+* Sensor grouping & hierarchy information
 
 ---
 
-## Expected Outcomes
+## 3. Statistical Diagnostics (`statistical_diagnostics.ipynb`)
 
-* Stable correlation maps and time-varying relationship analysis.  
-* Hybrid anomaly detection integrating statistical and ML-based components.  
-* Quantitative data quality metrics per sensor and per voyage.  
-* Scalable codebase for AI-driven sensor validation and health monitoring.  
-* Visualization layer enabling intuitive fleet-wide monitoring.
+**Goal:** Use classical statistical methods to detect structural anomalies.
+
+### Techniques implemented
+
+* Z-score & modified Z-score
+* IQR + Tukey fences
+* Rolling mean/variance deviation
+* Drift detection
+* Residual-based anomaly scoring
+
+**Outputs:**
+
+* Diagnostics tables → `/data/diagnostics`
+* Time-series plots with highlighted anomalies
+
+---
+
+## 4. Outlier Verification (`Outlier_Verification.ipynb`)
+
+**Goal:** Validate anomalies detected earlier using visual inspection and rule-based checks.
+
+### Includes
+
+* Manual sensor comparison
+* Multi-sensor consistency checks
+* Rule-based thresholds from SME expertise
+* Cross-verifying outliers with subsystem logic
+
+**Outputs:** Annotated plots stored in `/images`.
+
+---
+
+## 5. Machine Learning Integration (`ML_Integration.ipynb`)
+
+**Goal:** Integrate ML-based anomaly detectors using cleaned & engineered features.
+
+### ML models used
+
+* **Isolation Forest** (unsupervised)
+* **Local Outlier Factor**
+* **Autoencoder reconstruction error**
+* **Ensemble scoring** combining statistical + ML methods
+
+### Key steps
+
+* Feature scaling
+* Train-test split from `/data/testing`
+* Model calibration using domain-specific constraints
+
+**Outputs:**
+
+* Saved models → `/data/ml_models`
+* ML anomaly scores → `/results`
+
+---
+
+## 6. Testing & Validation (`Testing_models.ipynb`)
+
+**Goal:** Validate ML and statistical models on unseen datasets.
+
+### Validation includes
+
+* Precision–recall for anomaly flags
+* Drift detection generalization across voyages
+* Comparison between anomaly detection pipelines
+* Reconstruction error evaluation
+
+**Outputs:**
+
+* Model test metrics
+* Final performance charts
+* Candidate model selection for deployment
+
+---
+
+## Methodology Summary
+
+Across all stages, the project performs:
+
+* **Timestamp normalization**
+* **Missing-value imputation**
+* **Cross-sensor correlation mapping**
+* **Unsupervised anomaly detection**
+* **Validation on multiple datasets**
+* **Model persistence & reproducibility**
 
 ---
 
 ## Dependencies
 
-* Python ≥ 3.9  
-* pandas, numpy  
-* matplotlib, seaborn  
-* scikit-learn  
-* scipy, statsmodels  
-* tensorflow or pytorch (for autoencoder / transformer models)
+Install with:
 
-Install via:
 ```bash
 pip install -r requirements.txt
+```
+
+Python ≥ 3.9 recommended.
+
+---
+
+## License
+
+MIT License.
+
