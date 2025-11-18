@@ -72,7 +72,7 @@ KONGSBERG/
 ## Workflow Breakdown (Aligned With the 6 Notebooks)
 
 For the full processing pipeline, see the workflow diagram here:  
-[**Kongsberg Sensor Health System — Updated Flowchart**](https://www.figma.com/board/QrxNQJUzQ1XQZcP7l9qmqv/Kongsberg-Sensor-Health-System---Updated-Flowchart?node-id=0-1&t=2zkH9O8ZTWRPtbni-1)
+[**Flowchart**](https://www.figma.com/board/QrxNQJUzQ1XQZcP7l9qmqv/Kongsberg-Sensor-Health-System---Updated-Flowchart?node-id=0-1&t=2zkH9O8ZTWRPtbni-1)
 
 ---
 
