@@ -71,7 +71,8 @@ KONGSBERG/
 
 ## Workflow Breakdown (Aligned With the 6 Notebooks)
 
-Below is the **true workflow sequence** corresponding to your actual notebooks.
+For the full processing pipeline, see the workflow diagram here:  
+[**Kongsberg Sensor Health System — Updated Flowchart**](https://www.figma.com/board/QrxNQJUzQ1XQZcP7l9qmqv/Kongsberg-Sensor-Health-System---Updated-Flowchart?node-id=0-1&t=2zkH9O8ZTWRPtbni-1)
 
 ---
 
@@ -90,7 +91,7 @@ Below is the **true workflow sequence** corresponding to your actual notebooks.
 
 **Outputs:**
 
-* `/images/eda_density_fixed.png`
+* `/results/plots/eda_density_fixed.png`
 * Summary of missing data
 * Initial signal quality flags
 
@@ -112,7 +113,7 @@ Below is the **true workflow sequence** corresponding to your actual notebooks.
 
 **Outputs:**
 
-* Heatmaps (saved to `/images`)
+* Heatmaps (saved to `/results`)
 * PCA components
 * Sensor grouping & hierarchy information
 
@@ -137,7 +138,7 @@ Below is the **true workflow sequence** corresponding to your actual notebooks.
 
 ---
 
-## 4. Outlier Verification (`Outlier_Verification.ipynb`)
+## 4. Outlier Verification (`outlier_verification.ipynb`)
 
 **Goal:** Validate anomalies detected earlier using visual inspection and rule-based checks.
 
@@ -148,11 +149,11 @@ Below is the **true workflow sequence** corresponding to your actual notebooks.
 * Rule-based thresholds from SME expertise
 * Cross-verifying outliers with subsystem logic
 
-**Outputs:** Annotated plots stored in `/images`.
+**Outputs:** in `/diagnostics/outlier_verification`.
 
 ---
 
-## 5. Machine Learning Integration (`ML_Integration.ipynb`)
+## 5. Machine Learning Integration (`ml_integration.ipynb`)
 
 **Goal:** Integrate ML-based anomaly detectors using cleaned & engineered features.
 
@@ -171,12 +172,12 @@ Below is the **true workflow sequence** corresponding to your actual notebooks.
 
 **Outputs:**
 
-* Saved models → `/data/ml_models`
-* ML anomaly scores → `/results`
+* Saved models → `/data/ml_models/checkpoints`
+* ML anomaly scores → `/data/ml_models`
 
 ---
 
-## 6. Testing & Validation (`Testing_models.ipynb`)
+## 6. Testing & Validation (`testing_models.ipynb`)
 
 **Goal:** Validate ML and statistical models on unseen datasets.
 
