@@ -110,9 +110,8 @@ vessel_IQ/
 │   ├── correlation_utils.py    # CHI, Granger causality, rolling correlations
 │   ├── statistical_tools.py    # SRI, heartbeat check, z-score, drift detection
 │   ├── ml_integration.py       # Autoencoder, GRU, Isolation Forest, ONV
-│   ├── model_testing.py        # Evaluation metrics, HHS computation
-│   └── utils.py                # Shared helpers
-│
+│   └── model_testing.py        # Evaluation metrics, HHS computation
+│    
 ├── .gitignore
 ├── LICENSE
 ├── requirements.txt
