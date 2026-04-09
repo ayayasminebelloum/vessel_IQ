@@ -3,11 +3,9 @@ import numpy as np
 import os
 from scipy import stats
 
-# =====================================
-# CONFIGURATION
-# =====================================
-DATA_DIR = "/Users/yasmine/Kongsberg/merged_csv"
-BASE_OUTPUT_DIR = "/Users/yasmine/Kongsberg/cleaned_csv"
+# Configuration: Replace with your own paths
+DATA_DIR = "data/raw"
+BASE_OUTPUT_DIR = "data/cleaned_csv"
 CLEANED_DIR = os.path.join(BASE_OUTPUT_DIR, "cleaned")
 OUTLIERS_DIR = os.path.join(BASE_OUTPUT_DIR, "outliers")
 
@@ -18,18 +16,16 @@ RESAMPLE_RULE = "1T"             # resample interval (1 minute)
 MAX_GAP_MINUTES = 30             # max gap interpolation limit
 
 
-# =====================================
-# FUNCTION TO CLEAN ONE SENSOR
-# =====================================
+# Function to clean one sensor
 def preprocess_sensor(file_path):
     sensor_name = os.path.basename(file_path)
     print(f"\nProcessing {sensor_name} ...")
 
-    # ---- Step 1: Read and standardize ----
+    # Read and standardize 
     df = pd.read_csv(file_path)
     df.columns = [c.strip().replace(" ", "_") for c in df.columns]
 
-    # ---- Step 2: Detect and parse timestamp ----
+    #  Detect and parse timestamp
     time_col = next((c for c in df.columns if "time" in c.lower()), None)
     if time_col is None:
         print(f"Skipping {sensor_name} (no timestamp column)")
@@ -40,11 +36,11 @@ def preprocess_sensor(file_path):
     df = df.dropna(subset=["Timestamp"]).sort_values("Timestamp")
     df = df.set_index("Timestamp")
 
-    # ---- Step 3: Ensure numeric columns ----
+    # Ensure numeric columns
     df["Value"] = pd.to_numeric(df["Value"], errors="coerce")
     df["ValueStatus"] = pd.to_numeric(df.get("ValueStatus", np.nan), errors="coerce")
 
-    # ---- Step 4: Keep only ValueStatus > 0 ----
+    # Keep only ValueStatus > 0 
     before = len(df)
     df = df[df["ValueStatus"] > 0]
     dropped = before - len(df)
@@ -54,17 +50,17 @@ def preprocess_sensor(file_path):
         print(f"{sensor_name} has no valid data after filtering.")
         return None
 
-    # ---- Step 5: Resample (mean per minute) ----
+    # Resample (mean per minute)
     df = df.resample(RESAMPLE_RULE).mean(numeric_only=True)
 
-    # ---- Step 6: Interpolate Value + fill ValueStatus ----
+    # Interpolate Value + fill ValueStatus 
     if "Value" in df.columns:
         df["Value"] = df["Value"].interpolate(limit=int(MAX_GAP_MINUTES),
                                               limit_direction="both")
     if "ValueStatus" in df.columns:
         df["ValueStatus"] = df["ValueStatus"].ffill().bfill()
 
-    # ---- Step 7: Dynamic outlier detection ----
+    # Dynamic outlier detection 
     if df["Value"].notna().sum() > 0:
         z_scores = np.abs(stats.zscore(df["Value"].fillna(method="ffill"), nan_policy="omit"))
         dynamic_z = np.nanmean(z_scores) + 3 * np.nanstd(z_scores)
@@ -80,7 +76,7 @@ def preprocess_sensor(file_path):
         outlier_df.to_csv(outlier_path)
         print(f"Saved {len(outlier_df)} outliers to: {outlier_path}")
 
-    # ---- Step 8: Normalize Value and ValueStatus ----
+    #  Normalize Value and ValueStatus 
     if df["Value"].notna().sum() > 0:
         v_min, v_max = df["Value"].min(), df["Value"].max()
         df["Value_norm"] = (df["Value"] - v_min) / (v_max - v_min) if v_max != v_min else 0.5
@@ -93,17 +89,17 @@ def preprocess_sensor(file_path):
     else:
         df["ValueStatus_norm"] = np.nan
 
-    # Optional: drop ValueStatus_norm if constant
+    # drop ValueStatus_norm if constant
     if df["ValueStatus"].nunique() <= 1:
         df.drop(columns=["ValueStatus_norm"], inplace=True, errors="ignore")
 
-    # ---- Step 9: Derived temporal features ----
+    # Derived temporal features 
     df["RollingMean_10min"] = df["Value_norm"].rolling(window=10, min_periods=1).mean()
     df["RateOfChange"] = df["Value_norm"].diff()
     df["DailyMean"] = df["Value_norm"].rolling(window=1440, min_periods=1).mean()
     df["time_diff"] = df.index.to_series().diff().dt.total_seconds().fillna(0)
 
-    # ---- Step 10: Save cleaned file ----
+    #  Save cleaned file 
     cleaned_path = os.path.join(CLEANED_DIR, sensor_name.replace(".csv", "_cleaned.csv"))
     df.to_csv(cleaned_path)
 
@@ -115,9 +111,7 @@ def preprocess_sensor(file_path):
     return df
 
 
-# =====================================
-# LOOP OVER ALL FILES
-# =====================================
+# Loop over all files
 all_files = [f for f in os.listdir(DATA_DIR) if f.endswith(".csv")]
 
 print(f"\nFound {len(all_files)} CSV files to process.")
