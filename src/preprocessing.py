@@ -12,7 +12,7 @@ OUTLIERS_DIR = os.path.join(BASE_OUTPUT_DIR, "outliers")
 os.makedirs(CLEANED_DIR, exist_ok=True)
 os.makedirs(OUTLIERS_DIR, exist_ok=True)
 
-RESAMPLE_RULE = "1T"             # resample interval (1 minute)
+RESAMPLE_RULE = "1min"             # resample interval (1 minute)
 MAX_GAP_MINUTES = 30             # max gap interpolation limit
 
 
@@ -62,7 +62,7 @@ def preprocess_sensor(file_path):
 
     # Dynamic outlier detection 
     if df["Value"].notna().sum() > 0:
-        z_scores = np.abs(stats.zscore(df["Value"].fillna(method="ffill"), nan_policy="omit"))
+        z_scores = np.abs(stats.zscore(df["Value"].ffill(), nan_policy="omit"))
         dynamic_z = np.nanmean(z_scores) + 3 * np.nanstd(z_scores)
         df["IsOutlier"] = z_scores > dynamic_z
     else:
