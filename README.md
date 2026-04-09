@@ -80,7 +80,7 @@ The TGM processes sensor time-series through three sequential analytical tiers, 
 ```
 vessel_IQ/
 │
-├── data/
+├── data/                       # However hidden for privacy reasons
 │   ├── cleaned_csv/            # Fully cleaned per-sensor datasets
 │   ├── derived/                # Engineered features and derived metrics
 │   ├── diagnostics/            # Statistical test outputs
@@ -113,7 +113,7 @@ vessel_IQ/
 │   ├── model_testing.py        # Evaluation metrics, HHS computation
 │   └── utils.py                # Shared helpers
 │
-├── venv/
+├── .gitignore
 ├── LICENSE
 ├── requirements.txt
 └── README.md
