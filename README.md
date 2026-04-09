@@ -1,9 +1,9 @@
 # Correlation-Driven Methods for Improving Vessel Sensor Data Quality
 ### A Tiered Graph Model for Maritime Sensor Health Monitoring
 
-**Author:** Aya-Yasmine Belloum · IE University · BCSAI / BDBA · 2025–2026  
+**Author:** Aya-Yasmine Belloum · IE University · BCSAI · 2025–2026  
 **Supervisors:** Prof. Daniel Precioso Garcelán · Prof. David Gómez Ullate Oteiza  
-**Industry Partner:** Kongsberg Digital — ARANTHERA Platform
+**Industry Partner:** Kongsberg Maritime 
 
 ---
 
@@ -11,7 +11,7 @@
 
 This repository contains the full implementation of the **Tiered Graph Model (TGM)** — a hybrid, correlation-driven framework for monitoring and improving the data quality of industrial sensor networks aboard LNG carriers.
 
-Applied to real operational data from a live vessel connected to Kongsberg Digital's ARANTHERA PI System, the TGM processes **28,196,293 training records** and **5,729,769 test records** across 45 sensors and 9 cargo subsystems, producing a unified per-sensor **Hybrid Health Score (HHS)** on a 0–100 reliability scale.
+Applied to real operational data from a live vessel connected to Kongsberg Maritime's PI System, the TGM processes **28,196,293 training records** and **5,729,769 test records** across 45 sensors and 9 cargo subsystems, producing a unified per-sensor **Hybrid Health Score (HHS)** on a 0–100 reliability scale.
 
 The central finding: all 45 sensors pass conventional heartbeat checks and report 99.98% valid `ValueStatus` — yet the TGM identifies structurally unstable subsystems, detects a multivariate anomaly cluster invisible to individual-sensor monitoring, and provides interpretable diagnostics that maintenance engineers can act on directly.
 
@@ -78,7 +78,7 @@ The TGM processes sensor time-series through three sequential analytical tiers, 
 ## Repository Structure
 
 ```
-KONGSBERG/
+vessel_IQ/
 │
 ├── data/
 │   ├── cleaned_csv/            # Fully cleaned per-sensor datasets
@@ -88,7 +88,7 @@ KONGSBERG/
 │   ├── mapping/                # Sensor mapping tables
 │   ├── ml_models/              # Saved ML models (IForest, AE, GRU, etc.)
 │   ├── network/                # Granger causality graphs (GEXF format)
-│   ├── raw/                    # Raw sensor CSVs from ARANTHERA PI System
+│   ├── raw/                    # Raw sensor CSVs from Kongsberg's PI System
 │   ├── testing/                # Held-out test datasets (Sep–Nov 2025)
 │   ├── merged_for_correlation.csv
 │   └── merged_sensor_data.csv
@@ -128,7 +128,7 @@ KONGSBERG/
 **Goal:** Understand raw sensor structure, sampling rates, missing values, and signal characteristics.
 
 Key tasks:
-- Load raw CSVs from `/data/raw` (ARANTHERA `.meta` + `.txt` export format)
+- Load raw CSVs from `/data/raw` (.meta` + `.txt` export format)
 - Standardise column names and parse timestamps to UTC-aware datetime
 - Detect timestamp gaps, duplicate records, and format inconsistencies
 - Plot primary signals and density curves per subsystem
