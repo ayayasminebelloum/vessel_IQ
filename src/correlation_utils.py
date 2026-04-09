@@ -7,12 +7,9 @@ from sklearn.feature_selection import mutual_info_regression
 from statsmodels.tsa.stattools import grangercausalitytests
 import networkx as nx
 
-# ---------------------------------------------------------
 # Correlation & Statistical Utilities
-# ---------------------------------------------------------
-
 def lagged_corr(a, b, max_lag=60):
-    """Compute correlation of a and b over time lags in minutes."""
+    # Compute correlation of a and b over time lags in minutes.
     lags = range(-max_lag, max_lag + 1)
     corrs = []
     for lag in lags:
@@ -23,7 +20,7 @@ def lagged_corr(a, b, max_lag=60):
 
 
 def rolling_correlation_all(CLEAN_DIR, OUTPUT_DIR, window=1440):
-    """Compute rolling correlation plots for all sensor pairs."""
+    # Compute rolling correlation plots for all sensor pairs.
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     clean_files = [f for f in os.listdir(CLEAN_DIR) if f.endswith("_cleaned.csv")]
     sensor_names = [f.replace("_cleaned.csv", "") for f in clean_files]
@@ -47,7 +44,7 @@ def rolling_correlation_all(CLEAN_DIR, OUTPUT_DIR, window=1440):
 
 
 def compute_chi(CLEAN_DIR, show_top=15):
-    """Compute Correlation Health Index (CHI) for all sensors."""
+    # Compute Correlation Health Index (CHI) for all sensors.
     files = [f for f in os.listdir(CLEAN_DIR) if f.endswith("_cleaned.csv")]
     data_frames = []
 
@@ -68,7 +65,7 @@ def compute_chi(CLEAN_DIR, show_top=15):
 
 
 def compute_granger_all(CLEAN_DIR, maxlag=5, p_threshold=0.05):
-    """Compute Granger causality for all sensor pairs."""
+    # Compute Granger causality for all sensor pairs.
     clean_files = [f for f in os.listdir(CLEAN_DIR) if f.endswith("_cleaned.csv")]
     sensor_names = [f.replace("_cleaned.csv", "") for f in clean_files]
     pairs = []
