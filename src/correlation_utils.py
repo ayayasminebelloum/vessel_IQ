@@ -64,7 +64,7 @@ def compute_chi(CLEAN_DIR, show_top=15):
     return chi
 
 
-def compute_granger_all(CLEAN_DIR, maxlag=5, p_threshold=0.05):
+def compute_granger_all(CLEAN_DIR, maxlag=3, p_threshold=0.05):
     # Compute Granger causality for all sensor pairs.
     clean_files = [f for f in os.listdir(CLEAN_DIR) if f.endswith("_cleaned.csv")]
     sensor_names = [f.replace("_cleaned.csv", "") for f in clean_files]
